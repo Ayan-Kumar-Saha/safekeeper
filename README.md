@@ -2,7 +2,7 @@
 
 **A simple and secure CLI tool for safely managing and sharing .env files alongside your code across teams.**  
 
-With safekeeper, you can **encrypt your `.env` files** so they can be safely stored in your repository or version control without risking accidental leaks.
+With safekeeper, you can **encrypt your `.env` files** so they can be safely stored in your repository using Git or VCS without risking accidental leaks.
 
 ---
 
@@ -22,9 +22,7 @@ Managing `.env` files across a team can be challenging:
 - Encrypting `.env` files securely to prevent accidental leaks, allowing them to be stored alongside your code.  
 - Supporting multiple environment files (`.env.local`, `.env.prod`, etc.) alongside your source code.  
 - Eliminating manual sharing - files can be versioned via Git or any VCS.  
-- Providing a free, offline, lightweight CLI tool for effective environment management without additional costs.  
-
-> With safekeeper, sharing, syncing, and managing environment variables becomes **secure, reliable, and hassle-free**.
+- Providing a free, offline, lightweight CLI tool for effective environment management without additional costs.
 
 ---
 
@@ -42,6 +40,7 @@ Managing `.env` files across a team can be challenging:
 ```bash
 # Install dependencies globally
 npm install -g safekeeper
+```
 
 ---
 
