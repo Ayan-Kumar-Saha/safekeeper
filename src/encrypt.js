@@ -1,9 +1,11 @@
-// encrypt.js
 import fs from 'fs';
+import path from 'path';
 import crypto from 'crypto';
 import chalk from 'chalk';
 
 const ALGO = 'aes-256-gcm';
+const pkg = JSON.parse(fs.readFileSync(path.resolve('./package.json'), 'utf-8'));
+const VERSION = pkg.version || '1.0.0';
 
 export function encryptEnv(file, key) {
   if (!key) {
@@ -23,11 +25,10 @@ export function encryptEnv(file, key) {
 
   const payload = Buffer.concat([iv, encrypted, authTag]).toString('base64');
 
-  // Key hash for verification
   const keyHash = crypto.createHash('sha256').update(key).digest('hex');
 
   const metadata = [
-    `# safekeeper:1.0.0`,
+    `# safekeeper:${VERSION}`,
     `# file:${file}`,
     `# created:${new Date().toISOString()}`,
     `# key-hash:${keyHash}`
