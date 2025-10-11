@@ -17,15 +17,15 @@
     "security"
   ],
   "author": "Ayan Kumar Saha",
-  "license": "ISC",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Ayan-Kumar-Saha/safekeeper.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/safekeeper/issues"
+    "url": "https://github.com/Ayan-Kumar-Saha/safekeeper/issues"
   },
-  "homepage": "https://github.com/yourusername/safekeeper#readme",
+  "homepage": "https://github.com/Ayan-Kumar-Saha/safekeeper#readme",
   "dependencies": {
     "chalk": "^5.6.2",
     "dotenv": "^17.2.3"
