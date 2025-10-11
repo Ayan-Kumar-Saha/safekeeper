@@ -1,12 +1,9 @@
+// encrypt.js
 import fs from 'fs';
-import path from 'path';
-import CryptoJS from 'crypto-js';
-import chalk from 'chalk';
 import crypto from 'crypto';
+import chalk from 'chalk';
 
-// Read package.json version dynamically
-const pkg = JSON.parse(fs.readFileSync(path.resolve('./package.json'), 'utf-8'));
-const VERSION = pkg.version || '1.0.0';
+const ALGO = 'aes-256-gcm';
 
 export function encryptEnv(file, key) {
   if (!key) {
@@ -16,21 +13,28 @@ export function encryptEnv(file, key) {
   }
 
   const env = fs.readFileSync(file, 'utf-8');
-  const encrypted = CryptoJS.AES.encrypt(env, key).toString();
 
-  // Generate SHA256 hash of key
+  const iv = crypto.randomBytes(12); // GCM nonce
+  const derivedKey = crypto.createHash('sha256').update(key).digest(); // 32-byte key
+  const cipher = crypto.createCipheriv(ALGO, derivedKey, iv);
+
+  const encrypted = Buffer.concat([cipher.update(env, 'utf8'), cipher.final()]);
+  const authTag = cipher.getAuthTag();
+
+  const payload = Buffer.concat([iv, encrypted, authTag]).toString('base64');
+
+  // Key hash for verification
   const keyHash = crypto.createHash('sha256').update(key).digest('hex');
 
   const metadata = [
-    `# envman:${VERSION}`,
+    `# envman:1.0.0`,
     `# file:${file}`,
     `# created:${new Date().toISOString()}`,
     `# key-hash:${keyHash}`
   ].join('\n');
 
   const outFile = `${file}.enc`;
-  fs.writeFileSync(outFile, `${metadata}\n\n${encrypted}`);
+  fs.writeFileSync(outFile, `${metadata}\n\n${payload}`);
 
   console.log(chalk.green(`✅ Encrypted: ${file} → ${outFile}`));
-  console.log(chalk.gray(`🔑 Key hash: ${keyHash} (for verification)`));
 }
