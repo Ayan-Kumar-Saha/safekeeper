@@ -2,9 +2,15 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import chalk from 'chalk';
+import { fileURLToPath } from 'url';
 
 const ALGO = 'aes-256-gcm';
-const pkg = JSON.parse(fs.readFileSync(path.resolve('./package.json'), 'utf-8'));
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const pkgPath = path.join(__dirname, '../package.json');
+const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
 const VERSION = pkg.version || '1.0.0';
 
 export function encryptEnv(file, key) {
