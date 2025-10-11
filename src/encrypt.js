@@ -27,7 +27,7 @@ export function encryptEnv(file, key) {
   const keyHash = crypto.createHash('sha256').update(key).digest('hex');
 
   const metadata = [
-    `# envman:1.0.0`,
+    `# safekeeper:1.0.0`,
     `# file:${file}`,
     `# created:${new Date().toISOString()}`,
     `# key-hash:${keyHash}`

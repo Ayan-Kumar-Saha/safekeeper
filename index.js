@@ -23,11 +23,11 @@ else if (cmd === 'decrypt') {
 }
 else {
   console.log(`Usage:
-  envman encrypt [file] [--key <secret>]
-  envman decrypt [file.enc] [--key <secret>]
+  safekeeper encrypt [file] [--key <secret>]
+  safekeeper decrypt [file.enc] [--key <secret>]
 
 Examples:
-  envman encrypt .env.local
-  envman decrypt .env.local.enc --key mysecretkey`);
+  safekeeper encrypt .env.local
+  safekeeper decrypt .env.local.enc --key mysecretkey`);
 }
 

@@ -1,10 +1,10 @@
-# envman 🔐
+# safekeeper 🔐
 
 **A simple, secure CLI tool to manage and share `.env` files across teams**
 
 ---
 
-## ⭐️ Why envman?
+## ⭐️ Why safekeeper?
 
 Managing `.env` files across a team can be challenging:
 
@@ -14,7 +14,7 @@ Managing `.env` files across a team can be challenging:
 - **Manual sharing hassle:** Sending `.env` files via chat or email is error-prone and insecure.  
 - **Cost constraints:** Not all teams can afford dedicated environment management services.  
 
-**envman solves these problems** by:
+**safekeeper solves these problems** by:
 
 - Maintaining a single source of truth that can be safely pulled and decrypted on any device.  
 - Encrypting `.env` files securely to prevent accidental leaks.  
@@ -22,7 +22,7 @@ Managing `.env` files across a team can be challenging:
 - Eliminating manual sharing - files can be versioned via Git or any VCS.  
 - Providing a free, offline, lightweight CLI tool for effective environment management without additional costs.  
 
-> With envman, sharing, syncing, and managing environment variables becomes **secure, reliable, and hassle-free**.
+> With safekeeper, sharing, syncing, and managing environment variables becomes **secure, reliable, and hassle-free**.
 
 ---
 
@@ -39,7 +39,7 @@ Managing `.env` files across a team can be challenging:
 ## 🚀 Installation
 ```bash
 # Install dependencies
-npm install -g envman
+npm install -g safekeeper
 ```
 ---
 
@@ -48,14 +48,14 @@ npm install -g envman
 ### Encrypt
 ```bash
 # Encrypt with auto-generated key
-envman encrypt --file .env.local
+safekeeper encrypt --file .env.local
 
 # Encrypt with custom key
-envman encrypt --file .env.local --key mysecretkey
+safekeeper encrypt --file .env.local --key mysecretkey
 ```
 
 ### Decrypt
 ```bash
 # Decrypt using key
-envman decrypt --file .env.local.enc --key mysecretkey
+safekeeper decrypt --file .env.local.enc --key mysecretkey
 ```

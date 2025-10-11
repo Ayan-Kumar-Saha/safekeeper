@@ -1,17 +1,31 @@
 {
-  "name": "envman",
+  "name": "safekeeper",
   "version": "1.0.0",
-  "main": "index.js",
   "type": "module",
+  "description": "A simple, secure CLI tool to manage and share `.env` files across teams",
+  "main": "index.js",
   "bin": {
-    "envman": "./index.js"
+    "safekeeper": "./index.js"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "private": false,
+  "keywords": [
+    "env",
+    "dotenv",
+    "encryption",
+    "cli",
+    "environment",
+    "security"
+  ],
   "author": "Ayan Kumar Saha",
   "license": "ISC",
-  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ayan-Kumar-Saha/safekeeper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/safekeeper/issues"
+  },
+  "homepage": "https://github.com/yourusername/safekeeper#readme",
   "dependencies": {
     "chalk": "^5.6.2",
     "dotenv": "^17.2.3"
