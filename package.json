@@ -1,6 +1,6 @@
 {
   "name": "safekeeper",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "module",
   "description": "A simple, secure CLI tool to manage and share `.env` files across teams",
   "main": "index.js",

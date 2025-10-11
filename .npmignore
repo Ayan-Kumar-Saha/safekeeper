@@ -1,0 +1,16 @@
+# Ignore node modules
+node_modules/
+.idea
+.node-version
+
+# Ignore local env files
+.env*
+*.enc
+
+# Ignore dev scripts and config
+*.log
+*.sh
+tests/
+scripts/
+.vscode/
+.DS_Store
