@@ -1,62 +1,88 @@
-# safekeeper 🔐
+# safekeeper 🔐  
 
-**A simple and secure CLI tool for safely managing and sharing .env files alongside your code across teams.**  
+**A simple, offline CLI tool to securely encrypt, decrypt, and manage `.env` files across teams .**  
 
-With safekeeper, you can **encrypt your `.env` files** so they can be safely stored in your repository using Git or VCS without risking accidental leaks.
+Keep your environment secrets **safe, versioned, and easily shareable** without ever exposing sensitive data in Git.
 
 ---
 
 ## ⭐️ Why safekeeper?
 
-Managing `.env` files across a team can be challenging:
+Managing `.env` files in a team is messy and insecure:
 
-- **Device changes or migration:** `.env` files may be lost or misplaced when switching devices.  
-- **Forgotten updates:** Team members might run the app with outdated or missing environment variables.
-- **Manual sharing hassle:** Sending `.env` files via chat or email is error-prone and insecure.  
-- **Cost constraints:** Not all teams can afford dedicated environment management services.  
+- 🧑‍💻 **Device changes or migrations:** Files get lost when switching machines.  
+- ⚠️ **Out-of-sync environments:** Developers often run outdated `.env` values.  
+- 💬 **Manual sharing hassle:** Passing `.env` via chat or email is risky.  
+- 💸 **Cost constraints:** Most environment managers are paid SaaS tools.
 
-**safekeeper solves these problems** by:
-
-- Maintaining a single encrypted source of truth that can be safely pulled and decrypted on any device.  
-- Store and manage `.env` files alongside your code using Git or any version control system.   
-- Remove the need for manual sharing—files are versioned automatically via Git or VCS.
-- Offer a free, offline, lightweight CLI for simple and cost-effective environment management.
+### safekeeper fixes all this by:
+- 🔐 Maintaining a single encrypted `.env` file that can be committed to Git.  
+- 🧩 Allowing team members to decrypt safely using stored keys.  
+- 💾 Keeping all encryption keys securely stored on your local machine.  
+- 🪶 Remaining completely free, offline, and lightweight.  
 
 ---
 
 ## ✨ Features
-- Encrypt any `.env` file with AES256 encryption.  
-- Auto-generate a secure key or use a custom key.  
-- Supports multiple environment files (`.env.local`, `.env.prod`, etc.).  
-- Key-hash verification ensures safe decryption.  
-- Includes file metadata (version, creation date) in encrypted files.  
-- Prevents invalid key decryption and corrupted `.env` files.  
+
+- AES-256-GCM encryption with authentication tag.  
+- Auto-generate or provide your own encryption key.  
+- Named key management via `key:set`, `key:get`, `key:list`, and `key:delete`.  
+- Safe key re-use - encrypt and decrypt just by referencing the key name.  
+- Secure local key storage (`~/.safekeeper/keys.json`).  
+- Seamless Git integration - safely commit `.env.enc` files to repos.  
 
 ---
 
 ## 🚀 Installation
+
 ```bash
-# Install dependencies globally
 npm install -g safekeeper
 ```
-
 ---
 
 ## 🎥 Usage
 
-### Encrypt
+### 🔒 Encrypt a file
 ```bash
-# Encrypt with auto-generated key
-safekeeper encrypt --file .env.local
-
-# Encrypt with custom key
-safekeeper encrypt --file .env.local --key mysecretkey
+# Interactive mode (recommended)
+safekeeper encrypt
 ```
+You’ll be prompted for:
+- Path to the .env file
+- Key name (used to store and reference the key later)
+- Secret key (optional — auto-generated if skipped)
 
 ### Decrypt
 ```bash
 # Decrypt using key
-safekeeper decrypt --file .env.local.enc --key mysecretkey
+safekeeper decrypt
+```
+You’ll be prompted for:
+- Path to the .env.enc file
+- Key name (used to fetch the stored key)
+
+## 🗝️ Key Management
+Safekeeper also includes a built-in encrypted local keystore (`~/.safekeeper/keys.json`) for easy reuse.
+
+### Add or update a key
+```bash
+safekeeper key:set
+```
+
+### Retrieve a key
+```bash
+safekeeper key:get
+```
+
+### List all keys
+```bash
+safekeeper key:list
+```
+
+### Delete a key
+```bash
+safekeeper key:delete
 ```
 
 ## 📄 License
