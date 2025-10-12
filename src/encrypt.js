@@ -44,4 +44,5 @@ export function encryptEnv(file, key) {
   fs.writeFileSync(outFile, `${metadata}\n\n${payload}`);
 
   console.log(chalk.green(`✅ Encrypted: ${file} → ${outFile}`));
+  return key; // <--- return the key
 }

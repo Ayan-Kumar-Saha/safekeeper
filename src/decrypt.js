@@ -15,6 +15,7 @@ export function decryptEnv(file, key) {
   if (keyHashLine) {
     const storedHash = keyHashLine.split(':')[1].trim();
     const computedHash = crypto.createHash('sha256').update(key).digest('hex');
+    
     if (storedHash !== computedHash) {
       console.error(chalk.red(`❌ Key hash mismatch. Invalid key for this file.`));
       process.exit(1);
@@ -43,4 +44,6 @@ export function decryptEnv(file, key) {
     console.error(chalk.red(`❌ Decryption failed. Invalid key or corrupted file.`));
     process.exit(1);
   }
+
+  return key; // <--- return the key
 }
