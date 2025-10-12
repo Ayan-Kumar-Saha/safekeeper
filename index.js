@@ -12,30 +12,40 @@ const MASTER_KEY = 'safekeeper-master-key';
 program
   .command('encrypt')
   .description('Encrypt a .env file')
-  .action(async () => {
+  .option('-f, --file <path>', 'Path to the .env file')
+  .option('-n, --name <name>', 'Name for this key')
+  .option('-k, --key <key>', 'Secret key (optional, auto-generated if omitted)')
+  .action(async (options) => {
     console.log(chalk.cyanBright('\n🔐 SafeKeeper — Encrypt Environment File\n'));
 
-    const { file } = await inquirer.prompt({
-      type: 'input',
-      name: 'file',
-      message: '📄 Path to the .env file:'
-    });
+    let { file, name, key } = options;
+
+    if (!file) {
+      const ans = await inquirer.prompt({
+        type: 'input',
+        name: 'file',
+        message: '📄 Path to the .env file:'
+      });
+      file = ans.file;
+    }
 
     validateFile(file);
 
-    const { name } = await inquirer.prompt({
-      type: 'input',
-      name: 'name',
-      message: '🏷️  Name for this key:'
-    });
+    if (!name) {
+      const ans = await inquirer.prompt({
+        type: 'input',
+        name: 'name',
+        message: '🏷️  Name for this key:'
+      });
+      name = ans.name;
+    }
 
     if (!name) return console.log(chalk.red('❌ Name is required.'));
 
-    let key = null;
     if (keyExists(name)) {
       console.log(chalk.green(`✅ Found existing key "${name}". Using stored key...`));
       key = getKey(name, MASTER_KEY);
-    } else {
+    } else if (!key) {
       const ans = await inquirer.prompt({
         type: 'input',
         name: 'key',
@@ -58,30 +68,40 @@ program
 program
   .command('decrypt')
   .description('Decrypt a .env.enc file')
-  .action(async () => {
+  .option('-f, --file <file>', 'Path to the .env.enc file')
+  .option('-n, --name <name>', 'Name of the key to use')
+  .option('-k, --key <key>', 'Secret key (optional, if not stored)')
+  .action(async (opts) => {
     console.log(chalk.cyanBright('\n🔓 SafeKeeper — Decrypt Environment File\n'));
 
-    const { file } = await inquirer.prompt({
-      type: 'input',
-      name: 'file',
-      message: '📄 Path to the .env.enc file:'
-    });
+    let { file, name, key } = opts;
+
+    if (!file) {
+      const ans = await inquirer.prompt({
+        type: 'input',
+        name: 'file',
+        message: '📄 Path to the .env.enc file:'
+      });
+      file = ans.file;
+    }
 
     validateFile(file);
 
-    const { name } = await inquirer.prompt({
-      type: 'input',
-      name: 'name',
-      message: '🏷️  Name of the key to use:'
-    });
+    if (!name) {
+      const ans = await inquirer.prompt({
+        type: 'input',
+        name: 'name',
+        message: '🏷️  Name of the key to use:'
+      });
+      name = ans.name;
+    }
 
     if (!name) return console.log(chalk.red('❌ Name is required.'));
 
-    let key = null;
     if (keyExists(name)) {
       console.log(chalk.green(`✅ Found existing key "${name}". Using stored key...`));
       key = getKey(name, MASTER_KEY);
-    } else {
+    } else if (!key) {
       const ans = await inquirer.prompt({
         type: 'input',
         name: 'key',
@@ -106,24 +126,35 @@ program
     console.log(chalk.cyanBright('\n✨ Decryption complete!\n'));
   });
 
+
 program
   .command('key:set')
   .description('Add or update a stored key')
-  .action(async () => {
+  .option('-n, --name <name>', 'Name of the key')
+  .option('-v, --value <value>', 'Secret value for the key')
+  .action(async (opts) => {
     console.log(chalk.cyanBright('\n⚙️  Manage SafeKeeper Keys\n'));
 
-    const { name } = await inquirer.prompt({
-      type: 'input',
-      name: 'name',
-      message: '🏷️  Enter key name:'
-    });
+    let { name, value } = opts;
+
+    if (!name) {
+      const ans = await inquirer.prompt({
+        type: 'input',
+        name: 'name',
+        message: '🏷️  Enter key name:'
+      });
+      name = ans.name;
+    }
     if (!name) return console.log(chalk.red('❌ Name is required.'));
 
-    const { value } = await inquirer.prompt({
-      type: 'input',
-      name: 'value',
-      message: `🔑 Secret value for "${name}":`
-    });
+    if (!value) {
+      const ans = await inquirer.prompt({
+        type: 'input',
+        name: 'value',
+        message: `🔑 Secret value for "${name}":`
+      });
+      value = ans.value;
+    }
     if (!value) return console.log(chalk.red('❌ Value is required.'));
 
     if (keyExists(name)) {
@@ -143,12 +174,18 @@ program
 program
   .command('key:get')
   .description('Retrieve and display a stored key')
-  .action(async () => {
-    const { name } = await inquirer.prompt({
-      type: 'input',
-      name: 'name',
-      message: '🏷️  Enter key name:'
-    });
+  .option('-n, --name <name>', 'Name of the key to retrieve')
+  .action(async (opts) => {
+    let { name } = opts;
+
+    if (!name) {
+      const ans = await inquirer.prompt({
+        type: 'input',
+        name: 'name',
+        message: '🏷️  Enter key name:'
+      });
+      name = ans.name;
+    }
     if (!name) return console.log(chalk.red('❌ Name is required.'));
 
     const value = getKey(name, MASTER_KEY);
@@ -172,12 +209,18 @@ program
 program
   .command('key:delete')
   .description('Delete a stored key')
-  .action(async () => {
-    const { name } = await inquirer.prompt({
-      type: 'input',
-      name: 'name',
-      message: '🏷️  Enter key name to delete:'
-    });
+  .option('-n, --name <name>', 'Name of the key to delete')
+  .action(async (opts) => {
+    let { name } = opts;
+
+    if (!name) {
+      const ans = await inquirer.prompt({
+        type: 'input',
+        name: 'name',
+        message: '🏷️  Enter key name to delete:'
+      });
+      name = ans.name;
+    }
     if (!name) return console.log(chalk.red('❌ Name is required.'));
 
     if (!keyExists(name)) return console.log(chalk.yellow(`⚠️  Key "${name}" not found.`));
