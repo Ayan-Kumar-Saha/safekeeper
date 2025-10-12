@@ -9,15 +9,17 @@ import { saveKey, getKey, keyExists, listKeys, deleteKey } from './src/keyStore.
 
 const MASTER_KEY = 'safekeeper-master-key';
 
+// --- ENCRYPT ---
 program
   .command('encrypt')
   .description('Encrypt a .env file')
   .action(async () => {
+    console.log(chalk.cyanBright('\n🔐 SafeKeeper — Encrypt Environment File\n'));
 
     const { file } = await inquirer.prompt({
       type: 'input',
       name: 'file',
-      message: 'Enter the path to the .env file:'
+      message: '📄 Path to the .env file:'
     });
 
     validateFile(file);
@@ -25,22 +27,20 @@ program
     const { name } = await inquirer.prompt({
       type: 'input',
       name: 'name',
-      message: 'Enter a name for this key:'
+      message: '🏷️  Name for this key:'
     });
 
-    if (!name)
-      return console.log(chalk.red(`❌ name is required`));
+    if (!name) return console.log(chalk.red('❌ Name is required.'));
 
     let key = null;
-
     if (keyExists(name)) {
-      console.log(chalk.green('✅ Key already exists in the store! Using the same...'));
+      console.log(chalk.green(`✅ Found existing key "${name}". Using stored key...`));
       key = getKey(name, MASTER_KEY);
-    } else if (!key) {
+    } else {
       const ans = await inquirer.prompt({
         type: 'input',
         name: 'key',
-        message: 'Enter a secret key (leave blank to auto-generate):',
+        message: '🔑 Enter a secret key (leave blank to auto-generate):',
         default: ''
       });
       key = ans.key;
@@ -50,20 +50,23 @@ program
 
     if (!keyExists(name)) {
       saveKey(name, key, MASTER_KEY);
-      console.log(chalk.green(`✅ Key saved in store as "${name}"`));
+      console.log(chalk.green(`💾 Key stored securely as "${name}".`));
     }
+
+    console.log(chalk.cyanBright('\n✨ Encryption complete!\n'));
   });
 
-
+// --- DECRYPT ---
 program
   .command('decrypt')
   .description('Decrypt a .env.enc file')
   .action(async () => {
+    console.log(chalk.cyanBright('\n🔓 SafeKeeper — Decrypt Environment File\n'));
 
     const { file } = await inquirer.prompt({
       type: 'input',
       name: 'file',
-      message: 'Enter the path to the .env.enc file:'
+      message: '📄 Path to the .env.enc file:'
     });
 
     validateFile(file);
@@ -71,29 +74,27 @@ program
     const { name } = await inquirer.prompt({
       type: 'input',
       name: 'name',
-      message: 'Enter the name of the key to be used:'
+      message: '🏷️  Name of the key to use:'
     });
 
-    if (!name)
-      return console.log(chalk.red(`❌ name is required`));
+    if (!name) return console.log(chalk.red('❌ Name is required.'));
 
     let key = null;
-
     if (keyExists(name)) {
-      console.log(chalk.green('✅ Key already exists in store! Using the same...'));
+      console.log(chalk.green(`✅ Found existing key "${name}". Using stored key...`));
       key = getKey(name, MASTER_KEY);
-    } else if (!key) {
+    } else {
       const ans = await inquirer.prompt({
         type: 'input',
         name: 'key',
-        message: 'Enter the secret key:',
+        message: '🔑 Enter the secret key:',
         default: ''
       });
       key = ans.key;
     }
 
     if (!key) {
-      console.log(chalk.red('❌ Key is required for decryption (one-time only).'));
+      console.log(chalk.red('❌ A valid key is required to decrypt this file.'));
       process.exit(1);
     }
 
@@ -101,118 +102,102 @@ program
 
     if (!keyExists(name)) {
       saveKey(name, key, MASTER_KEY);
-      console.log(chalk.green(`✅ Key saved in store as "${name}"`));
+      console.log(chalk.green(`💾 Key stored securely as "${name}".`));
     }
+
+    console.log(chalk.cyanBright('\n✨ Decryption complete!\n'));
   });
 
+// --- KEY COMMANDS ---
 program
   .command('key:set')
-  .description('Set a new key')
+  .description('Add or update a stored key')
   .action(async () => {
+    console.log(chalk.cyanBright('\n⚙️  Manage SafeKeeper Keys\n'));
 
     const { name } = await inquirer.prompt({
       type: 'input',
       name: 'name',
-      message: `Enter the name of the key?`
-    })
-
-    if (!name)
-      return console.log(chalk.red(`❌ name is required`));
+      message: '🏷️  Enter key name:'
+    });
+    if (!name) return console.log(chalk.red('❌ Name is required.'));
 
     const { value } = await inquirer.prompt({
       type: 'input',
       name: 'value',
-      message: `Enter the secret value for key "${name}":`
+      message: `🔑 Secret value for "${name}":`
     });
-
-    if (!value)
-      return console.log(chalk.red(`❌ value is required`));
+    if (!value) return console.log(chalk.red('❌ Value is required.'));
 
     if (keyExists(name)) {
       const { confirm } = await inquirer.prompt({
         type: 'confirm',
         name: 'confirm',
-        message: `Are you sure you want to overwrite  key "${name}"?`,
+        message: `⚠️  Key "${name}" already exists. Overwrite?`,
         default: false
       });
-
-      if (!confirm)
-        return console.log(chalk.yellow('⚠️  Operation cancelled.'));
+      if (!confirm) return console.log(chalk.yellow('🚫 Operation cancelled.'));
     }
 
     saveKey(name, value, MASTER_KEY);
-    console.log(chalk.green(`✅ Key "${name}" saved.`));
+    console.log(chalk.green(`💾 Key "${name}" stored successfully.`));
   });
 
 program
   .command('key:get')
-  .description('Get a stored key value')
+  .description('Retrieve and display a stored key')
   .action(async () => {
-
     const { name } = await inquirer.prompt({
       type: 'input',
       name: 'name',
-      message: `Enter the name of the key?`
+      message: '🏷️  Enter key name:'
     });
-
-    if (!name)
-      return console.log(chalk.red(`❌ name is required`));
+    if (!name) return console.log(chalk.red('❌ Name is required.'));
 
     const value = getKey(name, MASTER_KEY);
+    if (!value) return console.log(chalk.yellow(`⚠️  No key found for "${name}".`));
 
-    if (!value)
-      return console.log(chalk.yellow(`⚠️  Key "${name}" not found.`));
-
-    console.log(chalk.green(`🔑 ${name}: ${value}`));
+    console.log(chalk.greenBright(`\n🔑 Key "${name}": ${chalk.white(value)}\n`));
   });
 
 program
   .command('key:list')
-  .description('List all stored keys (values hidden)')
+  .description('Show all stored keys (values hidden)')
   .action(() => {
     const keys = listKeys();
+    if (!keys.length) return console.log(chalk.yellow('⚠️  No keys found.'));
 
-    if (!keys.length)
-      return console.log(chalk.yellow('⚠️ No keys stored.'));
-
-    console.log(chalk.cyan('📜 Stored keys:'));
-    keys.forEach(k => console.log(`  ${chalk.green(k)}`));
+    console.log(chalk.cyanBright('\n📜 Stored keys:\n'));
+    keys.forEach(k => console.log(`  • ${chalk.green(k)}`));
+    console.log();
   });
 
 program
   .command('key:delete')
   .description('Delete a stored key')
   .action(async () => {
-
     const { name } = await inquirer.prompt({
       type: 'input',
       name: 'name',
-      message: `Enter the name of the key: `
+      message: '🏷️  Enter key name to delete:'
     });
+    if (!name) return console.log(chalk.red('❌ Name is required.'));
 
-    if (!name)
-      return console.log(chalk.red(`❌ name is required`));
-
-    if (!keyExists(name))
-      return console.log(chalk.yellow(`⚠️ Key "${name}" not found.`));
+    if (!keyExists(name)) return console.log(chalk.yellow(`⚠️  Key "${name}" not found.`));
 
     const { confirm } = await inquirer.prompt({
       type: 'confirm',
       name: 'confirm',
-      message: `Are you sure you want to delete key "${name}"?`,
+      message: `🗑️  Delete key "${name}"?`,
       default: false
     });
 
-    if (!confirm)
-      return console.log(chalk.yellow('⚠️ Operation cancelled.'));
+    if (!confirm) return console.log(chalk.yellow('🚫 Operation cancelled.'));
 
     deleteKey(name);
-    console.log(chalk.green(`🗑️ Key "${name}" deleted.`));
+    console.log(chalk.green(`✅ Key "${name}" deleted successfully.`));
   });
 
-
+// --- HELP ---
 program.parse(process.argv);
-
-if (!process.argv.slice(2).length) {
-  program.outputHelp();
-}
+if (!process.argv.slice(2).length) program.outputHelp();
