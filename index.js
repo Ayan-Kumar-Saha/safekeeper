@@ -9,7 +9,6 @@ import { saveKey, getKey, keyExists, listKeys, deleteKey } from './src/keyStore.
 
 const MASTER_KEY = 'safekeeper-master-key';
 
-// --- ENCRYPT ---
 program
   .command('encrypt')
   .description('Encrypt a .env file')
@@ -56,7 +55,6 @@ program
     console.log(chalk.cyanBright('\n✨ Encryption complete!\n'));
   });
 
-// --- DECRYPT ---
 program
   .command('decrypt')
   .description('Decrypt a .env.enc file')
@@ -108,7 +106,6 @@ program
     console.log(chalk.cyanBright('\n✨ Decryption complete!\n'));
   });
 
-// --- KEY COMMANDS ---
 program
   .command('key:set')
   .description('Add or update a stored key')
@@ -198,6 +195,5 @@ program
     console.log(chalk.green(`✅ Key "${name}" deleted successfully.`));
   });
 
-// --- HELP ---
 program.parse(process.argv);
 if (!process.argv.slice(2).length) program.outputHelp();

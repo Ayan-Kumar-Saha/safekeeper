@@ -45,5 +45,5 @@ export function decryptEnv(file, key) {
     process.exit(1);
   }
 
-  return key; // <--- return the key
+  return key;
 }
