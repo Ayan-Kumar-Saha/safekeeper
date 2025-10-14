@@ -4,6 +4,10 @@
 
 Keep your environment secrets **safe, versioned, and easily shareable** without ever exposing sensitive data in Git.
 
+> <span style="color:red;">⚠️ Note:</span> 
+> <span style="color:red;">Do not use this tool in production systems or public repositories yet.</span> safekeeper is currently in its early development stage. It is intended only for local development and testing purposes until it undergoes further security audits and stability improvements.
+
+
 ---
 
 ## ⭐️ Why safekeeper?
